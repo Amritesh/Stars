@@ -117,17 +117,57 @@ button:active {
 
 /* Pointer Screen */
 #pointer-screen {
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Changed from space-between to prioritize top */
+  align-items: center;
   text-align: center;
+  height: 100vh;
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom)); /* Safe area padding */
+  overflow: hidden;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.current-orientation {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  border: 1px dashed var(--accent-color);
+}
+
+.target-info {
+  margin-bottom: 0.5rem;
+}
+
+.guidance-text {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .pointer-container {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Center vertically in remaining space */
   position: relative;
   width: 100%;
+  min-height: 0;
+  margin-bottom: 2rem; /* Add some space from bottom */
 }
 
 .doodle-arrow {
@@ -168,9 +208,52 @@ button:active {
   100% { transform: scale(1); }
 }
 
-.guidance-text {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
+
+/* Small screen adjustments */
+@media (max-height: 660px) {
+  .guidance-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    min-height: 60px;
+  }
+  
+  .doodle-arrow {
+    font-size: 6rem;
+  }
+
+  .check-mark {
+    width: 80px;
+    height: 80px;
+    font-size: 4rem;
+  }
+  
+  .look-now {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.2rem;
+    margin: 0.2rem 0;
+  }
+  
+  button {
+      padding: 5px 15px;
+      font-size: 1rem;
+  }
+  
+  .pointer-container {
+      max-height: 50vh;
+  }
+}
+
+@media (max-height: 500px) {
+    .doodle-arrow {
+        font-size: 4rem;
+    }
+    .guidance-text {
+        font-size: 1rem;
+        min-height: 40px;
+    }
 }
 
 .warning-msg {

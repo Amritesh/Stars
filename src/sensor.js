@@ -4,6 +4,7 @@ export class SensorManager {
     this.heading = 0;
     this.pitch = 0;
     this.calibrationOffset = parseFloat(localStorage.getItem('stars_north_offset') || '0');
+    this.pitchOffset = parseFloat(localStorage.getItem('stars_pitch_offset') || '0');
     this.alpha = 0;
     this.beta = 0;
     this.gamma = 0;
@@ -99,8 +100,28 @@ export class SensorManager {
     // Upright (90) -> Horizon (0 deg alt)
     // Flat (0) -> Zenith (90 deg alt)
     // So, CameraPitch = 90 - beta.
+    // User requested inversion: Pitch = Beta - 90?
+    // Let's assume the user holds the phone such that screen faces them.
+    // Standard: Upright (beta=90). Tilted Back (screen to sky, beta < 90).
+    // If user says "Jupiter is up but pointer says down", it means:
+    // Target Alt = 45. Current Pitch (90-beta) = 0. Diff = +45. "Tilt UP".
+    // If user follows "Tilt UP" (tilts back), beta becomes 45. Pitch = 45. Aligned.
     
-    let rawPitch = 90 - beta;
+    // BUT user says "exactly opposite side that is pointing up".
+    // Maybe on their device beta behaves differently?
+    // Or maybe they are holding it differently.
+    // Let's try inverting the logic as requested: Pitch = Beta - 90.
+    // Upright (beta=90) -> Pitch=0.
+    // Tilted Back (beta=45) -> Pitch=-45.
+    // Tilted Forward (beta=135) -> Pitch=45.
+    // This implies "looking up" requires tilting forward?
+    
+    // Let's try `-(90-beta)` which is `beta - 90`.
+    let rawPitch = beta - 90;
+    
+    // Apply Pitch Offset
+    rawPitch = rawPitch + this.pitchOffset;
+
     // Clamp to -90 to +90?
     // Actually, if user tilts past zenith (phone upside down), beta goes > 90 or < 0?
     // For simple usage, 90-beta works for standard range.
@@ -155,5 +176,32 @@ export class SensorManager {
     this.calibrationOffset = -currentRaw;
     localStorage.setItem('stars_north_offset', this.calibrationOffset);
     return this.calibrationOffset;
+  }
+
+  setPitchCalibration() {
+    // We want current pitch to be 0 (Horizon)
+    // current = raw_pitch + offset
+    // 0 = raw_pitch + new_offset
+    // new_offset = -raw_pitch
+    // raw_pitch = current - old_offset
+    
+    // Calculate raw pitch from current smoothed pitch and existing offset
+    // Note: this.pitch is the smoothed value including the offset.
+    // smoothed_pitch = (prev * s) + ((raw + offset) * (1-s))
+    // This is complex because of smoothing.
+    // Simpler approximation: assume smoothed value has converged.
+    // current_pitch_output = smoothed_pitch (which includes offset)
+    
+    // We want 0 = current_pitch_output - old_offset + new_offset
+    // No wait.
+    // We effectively just want to zero the current reading.
+    // Current Reading C = Raw + OldOffset
+    // New Reading C' = Raw + NewOffset = 0
+    // Raw = C - OldOffset
+    // NewOffset = -Raw = -(C - OldOffset) = OldOffset - C
+    
+    this.pitchOffset = this.pitchOffset - this.pitch;
+    localStorage.setItem('stars_pitch_offset', this.pitchOffset);
+    return this.pitchOffset;
   }
 }

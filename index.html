@@ -42,11 +42,21 @@
 
       <!-- Pointer Screen -->
       <div id="pointer-screen" class="screen hidden">
-        <button id="back-btn" class="doodle-btn back-btn">← Back</button>
+        <div class="top-bar">
+          <button id="back-btn" class="doodle-btn back-btn">← Back</button>
+          <div class="current-orientation">
+            <p id="orientation-display">Facing: --°, Tilt: --°</p>
+          </div>
+        </div>
         
         <div class="target-info">
           <h2 id="target-name">Mars</h2>
           <p id="target-coords">Alt: 45° Az: 180°</p>
+        </div>
+
+        <div class="guidance-text">
+          <p id="turn-msg">Turn LEFT 30°</p>
+          <p id="tilt-msg">Tilt UP 10°</p>
         </div>
 
         <div class="pointer-container">
@@ -56,11 +66,6 @@
             <div class="check-mark">✔</div>
             <div class="look-now">LOOK NOW</div>
           </div>
-        </div>
-
-        <div class="guidance-text">
-          <p id="turn-msg">Turn LEFT 30°</p>
-          <p id="tilt-msg">Tilt UP 10°</p>
         </div>
         
         <div id="status-message" class="warning-msg hidden"></div>

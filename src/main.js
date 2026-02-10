@@ -8,6 +8,7 @@ class SensorManager {
     this.heading = 0; // 0=North, 90=East
     this.pitch = 0;   // 0=Horizon, 90=Zenith
     this.calibrationOffset = parseFloat(localStorage.getItem('stars_north_offset') || '0');
+    this.pitchOffset = parseFloat(localStorage.getItem('stars_pitch_offset') || '0');
     
     // Smoothing (simple low-pass)
     this.alpha = 0.15; // Higher = less smoothing, more responsive
@@ -77,6 +78,9 @@ class SensorManager {
     // Tilted back 45deg (screen up) -> beta=45 -> Pointing at Alt=45.
     // So Pitch = 90 - beta.
     let pitch = 90 - beta;
+    
+    // Apply Pitch Offset
+    pitch = pitch + this.pitchOffset;
 
     // Smoothing
     // Handle wrap-around for heading
@@ -100,6 +104,18 @@ class SensorManager {
     let raw = (this.heading - this.calibrationOffset + 360) % 360;
     this.calibrationOffset = -raw;
     localStorage.setItem('stars_north_offset', this.calibrationOffset);
+  }
+
+  calibrateCurrentAsHorizon() {
+    // We want current pitch to be 0 (Horizon)
+    // current = raw_pitch + offset
+    // 0 = raw_pitch + new_offset
+    // new_offset = -raw_pitch
+    // raw_pitch = current - old_offset
+    
+    let rawPitch = this.pitch - this.pitchOffset;
+    this.pitchOffset = -rawPitch;
+    localStorage.setItem('stars_pitch_offset', this.pitchOffset);
   }
 }
 
@@ -246,8 +262,12 @@ function updatePointerUI() {
   let altDiff = target.alt - appState.currentPitch;
 
   // UI Updates
-  document.getElementById('target-coords').textContent = 
+  document.getElementById('target-coords').textContent =
     `Alt: ${formatDeg(target.alt)} Az: ${formatDeg(target.az)}`;
+
+  // Update new orientation display
+  document.getElementById('orientation-display').textContent =
+    `Facing: ${Math.round(appState.currentHeading)}°, Tilt: ${Math.round(appState.currentPitch)}°`;
   
   const turnMsg = document.getElementById('turn-msg');
   const tiltMsg = document.getElementById('tilt-msg');
@@ -319,8 +339,14 @@ document.getElementById('close-cal-btn').addEventListener('click', () => {
 document.getElementById('set-north-btn').addEventListener('click', () => {
   if (sensorManager) {
     sensorManager.calibrateCurrentAsNorth();
-    calModal.classList.add('hidden');
     alert('North calibrated!');
+  }
+});
+
+document.getElementById('set-horizon-btn').addEventListener('click', () => {
+  if (sensorManager) {
+    sensorManager.calibrateCurrentAsHorizon();
+    alert('Horizon calibrated!');
   }
 });
 
