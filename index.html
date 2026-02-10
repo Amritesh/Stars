@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stars Pointer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Permission / Start Screen -->
+      <div id="start-screen" class="screen active">
+        <h1>✨ Stars ✨</h1>
+        <p class="subtitle">Celestial Pointer</p>
+        <div class="doodle-box instruction-box">
+          <p>Point your phone at the sky to find planets and stars!</p>
+          <p>We need your location and device sensors.</p>
+        </div>
+        <button id="start-btn" class="doodle-btn">Enable Sensors & Start</button>
+        <div id="permission-status"></div>
+      </div>
+
+      <!-- List Screen -->
+      <div id="list-screen" class="screen hidden">
+        <header>
+          <h2>Objects</h2>
+          <div class="location-status">
+            <span id="loc-latlon">Locating...</span>
+          </div>
+        </header>
+        <div id="objects-list" class="scroll-container">
+          <!-- Items will be injected here -->
+        </div>
+        <footer class="doodle-footer">
+          <button id="calibrate-btn" class="small-btn">Set North</button>
+          <button id="debug-toggle" class="small-btn">Debug</button>
+        </footer>
+      </div>
+
+      <!-- Pointer Screen -->
+      <div id="pointer-screen" class="screen hidden">
+        <button id="back-btn" class="doodle-btn back-btn">← Back</button>
+        
+        <div class="target-info">
+          <h2 id="target-name">Mars</h2>
+          <p id="target-coords">Alt: 45° Az: 180°</p>
+        </div>
+
+        <div class="pointer-container">
+          <!-- Arrow or Checkmark -->
+          <div id="pointer-arrow" class="doodle-arrow">➤</div>
+          <div id="lock-indicator" class="hidden">
+            <div class="check-mark">✔</div>
+            <div class="look-now">LOOK NOW</div>
+          </div>
+        </div>
+
+        <div class="guidance-text">
+          <p id="turn-msg">Turn LEFT 30°</p>
+          <p id="tilt-msg">Tilt UP 10°</p>
+        </div>
+        
+        <div id="status-message" class="warning-msg hidden"></div>
+      </div>
+
+      <!-- Calibration Modal -->
+      <div id="calibration-modal" class="modal hidden">
+        <div class="modal-content doodle-box">
+          <h3>Calibrate North</h3>
+          <p>Point your phone at TRUE NORTH and tap "Set".</p>
+          <button id="set-north-btn" class="doodle-btn">Set North</button>
+          <button id="close-cal-btn" class="doodle-btn secondary">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Debug Overlay -->
+      <div id="debug-overlay" class="hidden">
+        <pre id="debug-log"></pre>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
