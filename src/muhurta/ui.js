@@ -92,18 +92,18 @@ export class MuhurtaScreen {
     alarmBtn.className = 'small-btn action-btn';
     alarmBtn.innerHTML = '⏰';
     alarmBtn.title = "Set Alarm";
+    // Always enable but show visual hint and alert if it fails
     if (getPlatformInfo() !== "Android") {
-      alarmBtn.disabled = true;
-      alarmBtn.classList.add('disabled');
-      alarmBtn.title = "Not supported on iOS/Desktop";
-    } else {
-        alarmBtn.addEventListener('click', () => {
-            const success = openAndroidAlarm(time.getHours(), time.getMinutes(), title);
-            if (!success) {
-                alert("Could not open Alarm app. Use Add to Calendar instead.");
-            }
-        });
+      alarmBtn.classList.add('not-android');
+      alarmBtn.title = "Best on Android; on other devices use Calendar";
     }
+    
+    alarmBtn.addEventListener('click', () => {
+        const success = openAndroidAlarm(time.getHours(), time.getMinutes(), title);
+        if (!success) {
+            alert("Alarm auto-set is only supported on Android with Google Clock. Please use 'Add to Calendar' for other devices.");
+        }
+    });
 
     // Add to Calendar Button
     const addBtn = document.createElement('button');
@@ -145,13 +145,15 @@ export class MuhurtaScreen {
       alarmBtn.className = 'small-btn action-btn';
       alarmBtn.innerHTML = '⏰';
       if (getPlatformInfo() !== "Android") {
-          alarmBtn.disabled = true;
-          alarmBtn.classList.add('disabled');
-      } else {
-        alarmBtn.addEventListener('click', () => {
-            openAndroidAlarm(start.getHours(), start.getMinutes(), title);
-        });
+          alarmBtn.classList.add('not-android');
       }
+      
+      alarmBtn.addEventListener('click', () => {
+          const success = openAndroidAlarm(start.getHours(), start.getMinutes(), title);
+          if (!success) {
+              alert("Alarm auto-set is only supported on Android with Google Clock. Please use 'Add to Calendar' for other devices.");
+          }
+      });
 
       const addBtn = document.createElement('button');
       addBtn.className = 'small-btn action-btn';

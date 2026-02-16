@@ -58,10 +58,9 @@
     min-width: 44px;
 }
 
-.action-btn.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    border-color: #555;
+.action-btn.not-android {
+    opacity: 0.6;
+    border-style: dotted;
 }
 
 .date-controls {

@@ -21,6 +21,10 @@
         </div>
         <button id="start-btn" class="doodle-btn">Enable Sensors & Start</button>
         <div id="permission-status"></div>
+        <div id="permission-retry" class="hidden" style="margin-top: 20px; text-align: center;">
+          <p style="font-size: 0.9rem; margin-bottom: 10px;">If you denied permission, you might need to refresh the page or check your browser settings.</p>
+          <button id="retry-btn" class="small-btn">Try Again</button>
+        </div>
       </div>
 
       <!-- List Screen -->
@@ -36,7 +40,7 @@
         </div>
         <footer class="doodle-footer">
           <button id="calibrate-btn" class="small-btn">Set North</button>
-          <button id="muhurta-btn" class="small-btn">Muhurta</button>
+          <button id="muhurat-btn" class="small-btn">Muhurat</button>
           <button id="debug-toggle" class="small-btn">Debug</button>
         </footer>
       </div>
@@ -93,8 +97,11 @@
         <div class="modal-content doodle-box">
           <h3>Calibrate North</h3>
           <p>Point your phone at TRUE NORTH and tap "Set".</p>
-          <button id="set-north-btn" class="doodle-btn">Set North</button>
-          <button id="close-cal-btn" class="doodle-btn secondary">Cancel</button>
+          <div style="display: flex; gap: 10px; flex-direction: column;">
+            <button id="set-north-btn" class="doodle-btn">Set North</button>
+            <button id="set-horizon-btn" class="doodle-btn">Set Horizon (at Horizon)</button>
+            <button id="close-cal-btn" class="doodle-btn secondary">Cancel</button>
+          </div>
         </div>
       </div>
 

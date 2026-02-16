@@ -81,6 +81,17 @@ button:active {
   justify-content: flex-start;
 }
 
+.doodle-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  background: rgba(11, 13, 23, 0.9);
+  border-top: 1px dashed #444;
+  z-index: 20;
+}
+
 .scroll-container {
   width: 100%;
   max-width: 400px;

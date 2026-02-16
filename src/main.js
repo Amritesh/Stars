@@ -380,14 +380,14 @@ function showScreen(name) {
 }
 
 // 1. Start / Permissions
-document.getElementById('start-btn').addEventListener('click', async () => {
+async function handleStart() {
   // Geolocation
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         appState.lat = pos.coords.latitude;
         appState.lon = pos.coords.longitude;
-        document.getElementById('loc-latlon').textContent = 
+        document.getElementById('loc-latlon').textContent =
           `${appState.lat.toFixed(2)}, ${appState.lon.toFixed(2)}`;
         initApp();
       },
@@ -406,23 +406,35 @@ document.getElementById('start-btn').addEventListener('click', async () => {
   }
 
   // Sensors
-  sensorManager = new SensorManager((data) => {
-    appState.currentHeading = data.heading;
-    appState.currentPitch = data.pitch;
-    updatePointerUI();
-    
-    // Debug
-    if (!document.getElementById('debug-overlay').classList.contains('hidden')) {
-      document.getElementById('debug-log').textContent = 
-        `H: ${data.heading.toFixed(1)} P: ${data.pitch.toFixed(1)}\n` +
-        `Raw A:${data.raw.alpha?.toFixed(1)} B:${data.raw.beta?.toFixed(1)} G:${data.raw.gamma?.toFixed(1)}`;
-    }
-  });
+  if (!sensorManager) {
+    sensorManager = new SensorManager((data) => {
+      appState.currentHeading = data.heading;
+      appState.currentPitch = data.pitch;
+      updatePointerUI();
+      
+      // Debug
+      if (!document.getElementById('debug-overlay').classList.contains('hidden')) {
+        document.getElementById('debug-log').textContent =
+          `H: ${data.heading.toFixed(1)} P: ${data.pitch.toFixed(1)}\n` +
+          `Raw A:${data.raw.alpha?.toFixed(1)} B:${data.raw.beta?.toFixed(1)} G:${data.raw.gamma?.toFixed(1)}`;
+      }
+    });
+  }
 
   const granted = await sensorManager.requestPermission();
   if (!granted) {
     document.getElementById('permission-status').textContent = "Sensors denied. App may not work.";
+    document.getElementById('permission-retry').classList.remove('hidden');
+  } else {
+    document.getElementById('permission-status').textContent = "Sensors granted!";
+    document.getElementById('permission-retry').classList.add('hidden');
   }
+}
+
+document.getElementById('start-btn').addEventListener('click', handleStart);
+document.getElementById('retry-btn').addEventListener('click', () => {
+  // Try to re-request
+  handleStart();
 });
 
 function initApp() {
@@ -591,12 +603,16 @@ const muhurtaScreen = new MuhurtaScreen(
   () => showScreen('list')
 );
 
-document.getElementById('muhurta-btn').addEventListener('click', () => {
-  if (appState.lat !== null) {
-    muhurtaScreen.updateLocation(appState.lat, appState.lon);
-  }
-  showScreen('muhurta');
-});
+// Match both IDs to be safe, but use the new one primarily
+const muhuratBtn = document.getElementById('muhurat-btn') || document.getElementById('muhurta-btn');
+if (muhuratBtn) {
+  muhuratBtn.addEventListener('click', () => {
+    if (appState.lat !== null) {
+      muhurtaScreen.updateLocation(appState.lat, appState.lon);
+    }
+    showScreen('muhurta');
+  });
+}
 
 // --- Debug ---
 document.getElementById('debug-toggle').addEventListener('click', () => {
