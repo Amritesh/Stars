@@ -116,7 +116,7 @@ export class SensorManager {
     // Tilted Forward (beta=135) -> Pitch=45.
     // This implies "looking up" requires tilting forward?
     
-    // Let's try `-(90-beta)` which is `beta - 90`.
+    // Reverting to beta - 90 based on user feedback that 90-beta was inverted.
     let rawPitch = beta - 90;
     
     // Apply Pitch Offset
